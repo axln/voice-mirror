@@ -1,4 +1,4 @@
-export async function startRecordAudio() {
+export async function startAudioRecord() {
   if (navigator.mediaDevices) {
     let chunks: Blob[] = [];
     let resolve: ((data: Blob) => void) | null = null;
@@ -13,9 +13,11 @@ export async function startRecordAudio() {
         noiseSuppression: false,
       },
     });
-    /* stream.getTracks().forEach(function (track) {
+
+    stream.getTracks().forEach(function (track) {
+      console.log('Applied audio settings:', track.getSettings());
       console.log('track:', track.getCapabilities());
-    }); */
+    });
     // console.log('stream:', stream);
 
     const recorder = new MediaRecorder(stream);
@@ -66,8 +68,4 @@ export async function startRecordAudio() {
   } else {
     throw new Error('User media not supported.');
   }
-}
-
-export function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
 }

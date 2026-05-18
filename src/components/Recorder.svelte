@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { startRecordAudio, delay } from '~/lib/media';
+  import { startAudioRecord } from '~/lib/media';
+  import { delay } from '~/lib/timer';
   import Button from '~/components/Button.svelte';
   import Mic from '~/components/icons/Mic.svelte';
   import Play from '~/components/icons/Play.svelte';
@@ -13,10 +14,10 @@
   let audioUrl: string | null = $state(null);
 
   // svelte-ignore non_reactive_update
-  let buttonElement: HTMLButtonElement;
-
+  let recordButtonElement: HTMLButtonElement;
   // svelte-ignore non_reactive_update
-  let audioElement: HTMLAudioElement | undefined = undefined;
+  let pauseButtonElement: HTMLButtonElement;
+  let audioElement: HTMLAudioElement | undefined = $state(undefined);
 
   $effect(() => {
     if (audio) {
@@ -28,7 +29,19 @@
     }
   });
 
+  $effect(() => {
+    if (audioElement) {
+      audioElement.onplay = () => {
+        playing = true;
+      };
+      audioElement.onpause = () => {
+        playing = false;
+      };
+    }
+  });
+
   async function onrecord() {
+    console.log('onrecord');
     if (recording) {
       if (stopRecord) {
         const stopPromise = stopRecord();
@@ -50,12 +63,15 @@
     } else {
       if (audioElement && !audioElement.paused) {
         audioElement.pause();
+        // just in case
+        // if we test with audio loopback recording, delay allows not to record the previous playing record
         await delay(200);
       }
 
       audio = null;
       recording = true;
-      startRecordAudio()
+      playing = false;
+      startAudioRecord()
         .then((stop) => {
           stopRecord = stop;
         })
@@ -65,28 +81,54 @@
         });
     }
   }
+
+  function onpause() {
+    if (!audioElement) {
+      return;
+    }
+    if (playing) {
+      audioElement.pause();
+      playing = false;
+    } else {
+      audioElement.play();
+      playing = true;
+    }
+  }
 </script>
 
 <svelte:window
   onkeydowncapture={(e) => {
-    console.log('window keydown');
     if (e.code === 'Space') {
-      console.log('spacebar');
-      if (document.activeElement !== buttonElement) {
+      console.log('Space keydown');
+      if (document.activeElement !== recordButtonElement) {
         e.preventDefault();
-        console.log('onrecord');
+
         onrecord();
+      }
+    } else if (e.code == 'Escape') {
+      console.log('Escape keydown');
+      if (audioElement) {
+        audioElement.pause();
+      }
+    } else if (e.code == 'Enter') {
+      if (audioElement) {
+        if (document.activeElement !== pauseButtonElement) {
+          e.preventDefault();
+          audioElement.play();
+        }
       }
     }
   }}
 />
 
 <div class="flex justify-center gap-4">
+  <!-- disabled={recording && !stopRecord} -->
+  <!-- data-record={recording ? '' : null}  -->
   <Button
-    bind:element={buttonElement}
+    bind:element={recordButtonElement}
     class={[
-      'text-red-400',
-      'data-record:border-red-600 data-record:bg-red-500 data-record:text-white',
+      'text-red-500 hover:text-red-600',
+      'data-record:not-disabled:border-red-600 data-record:not-disabled:bg-red-500 data-record:not-disabled:text-white',
     ]}
     disabled={recording && !stopRecord}
     data-record={recording ? '' : null}
@@ -95,16 +137,19 @@
     <Mic size={24} />
   </Button>
 
-  <Button disabled>
-    {#if playing}
-      <Pause size={20} />
+  <Button bind:element={pauseButtonElement} disabled={audioElement ? null : ''} onclick={onpause}>
+    {#if audioElement}
+      {#if playing}
+        <Pause size={20} />
+      {:else}
+        <Play size={20} />
+      {/if}
     {:else}
-      <Play size={20} />
-    {/if}
+      <Pause size={20} />{/if}
   </Button>
 </div>
 
 {#if audioUrl}
   <!-- <audio bind:this={audioElement} autoplay loop src={audioUrl}></audio> -->
-  <Surfer {audioUrl} {audioElement} />
+  <Surfer {audioUrl} bind:audioElement />
 {/if}
