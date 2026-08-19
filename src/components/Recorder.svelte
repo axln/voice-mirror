@@ -65,7 +65,7 @@
         audioElement.pause();
         // just in case
         // if we test with audio loopback recording, delay allows not to record the previous playing record
-        await delay(200);
+        // await delay(200);
       }
 
       audio = null;
