@@ -146,7 +146,7 @@
       </div>
     {:else}
       <div
-        class="flex h-[96px] w-full items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 px-8 text-center text-sm text-slate-400"
+        class="flex h-48 w-full items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 px-8 text-center text-sm text-slate-400"
       >
         Your recording will appear here
       </div>
