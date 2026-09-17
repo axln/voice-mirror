@@ -13,13 +13,17 @@
   onMount(() => {
     const ws = WaveSurfer.create({
       container: waveform,
-      waveColor: '#d6d6d6',
-      progressColor: '#51da4c',
+      waveColor: '#cbd5e1',
+      progressColor: '#6366f1',
+      cursorColor: '#6366f1',
+      cursorWidth: 1,
       autoplay: true,
       hideScrollbar: true,
       normalize: false,
-      height: 50,
+      height: 64,
       barWidth: 2,
+      barGap: 2,
+      barRadius: 2,
     });
     audioElement = ws.getMediaElement();
 

@@ -1,10 +1,9 @@
 <script lang="ts">
   import Recorder from '~/components/Recorder.svelte';
-  import Sandbox from '~/components/Sandbox.svelte';
 </script>
 
-<main class="min-w-200 bg-amber-50 p-10">
+<main
+  class="flex min-h-screen w-full items-center justify-center bg-linear-to-b from-slate-50 via-white to-slate-100 px-6 py-16"
+>
   <Recorder />
 </main>
-
-<!-- <Sandbox /> -->

@@ -3,3 +3,8 @@
 @theme {
   --spacing: 2px;
 }
+
+html,
+body {
+  height: 100%;
+}
