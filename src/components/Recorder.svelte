@@ -206,7 +206,7 @@
       {/if}
     </div>
 
-    <div class="flex flex-col items-center gap-6">
+    <div class="flex flex-col items-center gap-10">
       <div class="relative flex w-full items-center justify-center gap-10">
         <Button
           bind:element={recordButtonElement}
