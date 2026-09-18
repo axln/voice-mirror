@@ -32,7 +32,7 @@
       : audioUrl
         ? playing
           ? 'Playing…'
-          : 'Tap play to listen'
+          : 'Tap Play to listen'
         : 'Tap to record'
   );
 
@@ -180,7 +180,7 @@
   <div class="mb-10 flex flex-col items-center gap-2 text-center">
     <div class="flex items-center justify-center gap-2">
       <Logo size={32} />
-      <h1 class="text-xl font-semibold tracking-tight text-slate-900">Voice Mirror</h1>
+      <h1 class="ml-2 text-xl font-semibold tracking-tight text-indigo-500">Voice Mirror</h1>
     </div>
     <p class="text-sm text-slate-500">Record your voice, hear it back instantly.</p>
   </div>
