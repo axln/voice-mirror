@@ -1,18 +1,11 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 
-// Splices the current GitHub Actions run number in as the semver patch
-// digit, so package.json's committed version always matches the last
-// successfully deployed build. Run only from CI, after a successful deploy.
-const buildNumber = process.env.GITHUB_RUN_NUMBER;
-if (!buildNumber) {
-  console.error('GITHUB_RUN_NUMBER is not set; refusing to bump package.json outside CI.');
-  process.exit(1);
-}
-
+// Increments package.json's patch version by 1. Run in CI before the build,
+// so the build embeds the same version that then gets committed back.
 const pkgPath = new URL('../package.json', import.meta.url);
 const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
-const [major, minor] = pkg.version.split('.');
-pkg.version = `${major}.${minor}.${buildNumber}`;
+const [major, minor, patch] = pkg.version.split('.').map(Number);
+pkg.version = `${major}.${minor}.${patch + 1}`;
 writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
 
-console.log(`package.json version set to ${pkg.version}`);
+console.log(`package.json version bumped to ${pkg.version}`);

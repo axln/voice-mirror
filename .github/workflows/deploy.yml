@@ -5,7 +5,7 @@ on:
     branches: 'main'
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
-# and to let the "bump version" step push the build-number commit back to main
+# and to let the "Commit version bump" step push the version bump back to main
 permissions:
   contents: write
   pages: write
@@ -38,6 +38,9 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Bump version in package.json
+        run: yarn bump-version
+
       - name: Type check
         run: yarn run check
 
@@ -56,13 +59,11 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v5
 
-      - name: Bump version in package.json
-        run: yarn bump-version
-
       - name: Commit version bump
         run: |
+          VERSION=$(node -p "require('./package.json').version")
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           git add package.json
-          git diff --staged --quiet || git commit -m "chore: bump build to ${GITHUB_RUN_NUMBER} [skip ci]"
+          git diff --staged --quiet || git commit -m "chore: bump version to v${VERSION} [skip ci]"
           git push
