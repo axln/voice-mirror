@@ -1,4 +1,12 @@
-export async function startAudioRecord() {
+export async function listAudioInputDevices(): Promise<MediaDeviceInfo[]> {
+  if (!navigator.mediaDevices?.enumerateDevices) {
+    return [];
+  }
+  const devices = await navigator.mediaDevices.enumerateDevices();
+  return devices.filter((device) => device.kind === 'audioinput');
+}
+
+export async function startAudioRecord(deviceId?: string) {
   if (navigator.mediaDevices) {
     let chunks: Blob[] = [];
     let resolve: ((data: Blob) => void) | null = null;
@@ -11,6 +19,7 @@ export async function startAudioRecord() {
         autoGainControl: false,
         echoCancellation: false,
         noiseSuppression: false,
+        ...(deviceId ? { deviceId: { exact: deviceId } } : {}),
       },
     });
 

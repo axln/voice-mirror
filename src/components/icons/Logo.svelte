@@ -1,0 +1,17 @@
+<script lang="ts">
+  let { size = 28 } = $props();
+</script>
+
+<svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+  <rect x="2" y="9" width="2.4" height="3" rx="1.2" fill="#6366f1" />
+  <rect x="6.5" y="6" width="2.4" height="6" rx="1.2" fill="#6366f1" />
+  <rect x="11" y="3.5" width="2.4" height="8.5" rx="1.2" fill="#6366f1" />
+  <rect x="15.5" y="6" width="2.4" height="6" rx="1.2" fill="#6366f1" />
+  <rect x="20" y="9" width="2.4" height="3" rx="1.2" fill="#6366f1" />
+
+  <rect x="2" y="12" width="2.4" height="3" rx="1.2" fill="#6366f1" opacity="0.35" />
+  <rect x="6.5" y="12" width="2.4" height="6" rx="1.2" fill="#6366f1" opacity="0.35" />
+  <rect x="11" y="12" width="2.4" height="8.5" rx="1.2" fill="#6366f1" opacity="0.35" />
+  <rect x="15.5" y="12" width="2.4" height="6" rx="1.2" fill="#6366f1" opacity="0.35" />
+  <rect x="20" y="12" width="2.4" height="3" rx="1.2" fill="#6366f1" opacity="0.35" />
+</svg>

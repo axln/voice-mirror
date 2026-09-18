@@ -1,10 +1,13 @@
 <script lang="ts">
-  import { startAudioRecord } from '~/lib/media';
+  import { startAudioRecord, listAudioInputDevices } from '~/lib/media';
   import { delay } from '~/lib/timer';
   import Button from '~/components/Button.svelte';
   import Mic from '~/components/icons/Mic.svelte';
   import Play from '~/components/icons/Play.svelte';
   import Pause from '~/components/icons/Pause.svelte';
+  import Settings from '~/components/icons/Settings.svelte';
+  import Check from '~/components/icons/Check.svelte';
+  import Logo from '~/components/icons/Logo.svelte';
   import Surfer from './Surfer.svelte';
 
   let recording = $state(false);
@@ -12,6 +15,10 @@
   let stopRecord: (() => Promise<Blob>) | null = $state(null);
   let audio: Blob | null = $state(null);
   let audioUrl: string | null = $state(null);
+  let audioInputDevices: MediaDeviceInfo[] = $state([]);
+  let selectedDeviceId: string = $state('');
+  let showMicMenu = $state(false);
+  let micMenuWrapperElement: HTMLDivElement | undefined = $state(undefined);
 
   // svelte-ignore non_reactive_update
   let recordButtonElement: HTMLButtonElement;
@@ -50,6 +57,33 @@
     }
   });
 
+  async function refreshAudioInputDevices() {
+    const devices = await listAudioInputDevices();
+    audioInputDevices = devices;
+    if (selectedDeviceId && !devices.some((d) => d.deviceId === selectedDeviceId)) {
+      selectedDeviceId = '';
+    }
+  }
+
+  $effect(() => {
+    refreshAudioInputDevices();
+    navigator.mediaDevices?.addEventListener('devicechange', refreshAudioInputDevices);
+    return () => {
+      navigator.mediaDevices?.removeEventListener('devicechange', refreshAudioInputDevices);
+    };
+  });
+
+  function selectDevice(deviceId: string) {
+    selectedDeviceId = deviceId;
+    showMicMenu = false;
+  }
+
+  // Chrome/Edge synthesize an extra audioinput entry with deviceId "default"
+  // (label "Default - <device name>") representing the OS default mic, on top
+  // of the real per-device entries. When present, it replaces our own
+  // "System default" item instead of duplicating it.
+  let hasBrowserDefaultDevice = $derived(audioInputDevices.some((d) => d.deviceId === 'default'));
+
   async function onrecord() {
     console.log('onrecord');
     if (recording) {
@@ -81,9 +115,11 @@
       audio = null;
       recording = true;
       playing = false;
-      startAudioRecord()
+      startAudioRecord(selectedDeviceId || undefined)
         .then((stop) => {
           stopRecord = stop;
+          // labels are only populated once mic permission has been granted
+          refreshAudioInputDevices();
         })
         .catch((err) => {
           console.error('Error starting recording:', err);
@@ -107,6 +143,11 @@
 </script>
 
 <svelte:window
+  onclick={(e) => {
+    if (showMicMenu && micMenuWrapperElement && !micMenuWrapperElement.contains(e.target as Node)) {
+      showMicMenu = false;
+    }
+  }}
   onkeydowncapture={(e) => {
     if (e.code === 'Space') {
       console.log('Space keydown');
@@ -117,7 +158,9 @@
       }
     } else if (e.code == 'Escape') {
       console.log('Escape keydown');
-      if (audioElement) {
+      if (showMicMenu) {
+        showMicMenu = false;
+      } else if (audioElement) {
         audioElement.pause();
       }
     } else if (e.code == 'Enter') {
@@ -135,7 +178,10 @@
   class="w-full max-w-md rounded-3xl border border-slate-200/70 bg-white p-10 shadow-xl shadow-slate-200/60 sm:p-16"
 >
   <div class="mb-10 flex flex-col items-center gap-2 text-center">
-    <h1 class="text-xl font-semibold tracking-tight text-slate-900">Sound Mirror</h1>
+    <div class="flex items-center justify-center gap-2">
+      <Logo size={32} />
+      <h1 class="text-xl font-semibold tracking-tight text-slate-900">Voice Mirror</h1>
+    </div>
     <p class="text-sm text-slate-500">Record your voice, hear it back instantly.</p>
   </div>
 
@@ -154,7 +200,7 @@
   </div>
 
   <div class="flex flex-col items-center gap-6">
-    <div class="flex items-center justify-center gap-10">
+    <div class="relative flex w-full items-center justify-center gap-10">
       <div class="relative">
         {#if recording}
           <span
@@ -203,6 +249,65 @@
           <Pause size={20} />
         {/if}
       </Button>
+
+      <div class="absolute top-1/2 right-0 -translate-y-1/2" bind:this={micMenuWrapperElement}>
+        <Button
+          class={[
+            'h-14 w-14 border border-slate-200 bg-white text-slate-500 shadow-sm',
+            'hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700',
+            'focus-visible:ring-slate-200',
+          ]}
+          onclick={() => (showMicMenu = !showMicMenu)}
+          aria-haspopup="true"
+          aria-expanded={showMicMenu}
+          aria-label="Select microphone"
+        >
+          <Settings size={18} />
+        </Button>
+
+        {#if showMicMenu}
+          <div
+            class="absolute top-full right-0 z-20 mt-2 w-max max-w-[min(22rem,calc(100vw-3rem))] rounded-2xl border border-slate-200 bg-white p-2 text-left shadow-xl shadow-slate-300/40"
+          >
+            <p class="px-3 pt-2 pb-1 text-xs font-medium text-slate-500">Microphone:</p>
+            <ul>
+              {#if !hasBrowserDefaultDevice}
+                <li>
+                  <button
+                    type="button"
+                    class="flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
+                    onclick={() => selectDevice('')}
+                  >
+                    <span class="flex w-5 shrink-0 items-center justify-center">
+                      {#if selectedDeviceId === ''}
+                        <Check size={20} />
+                      {/if}
+                    </span>
+                    <span class="break-words">System default</span>
+                  </button>
+                </li>
+              {/if}
+              {#each audioInputDevices as device, i (device.deviceId)}
+                {@const deviceValue = device.deviceId === 'default' ? '' : device.deviceId}
+                <li>
+                  <button
+                    type="button"
+                    class="flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
+                    onclick={() => selectDevice(deviceValue)}
+                  >
+                    <span class="flex w-5 shrink-0 items-center justify-center">
+                      {#if selectedDeviceId === deviceValue}
+                        <Check size={20} />
+                      {/if}
+                    </span>
+                    <span class="break-words">{device.label || `Microphone ${i + 1}`}</span>
+                  </button>
+                </li>
+              {/each}
+            </ul>
+          </div>
+        {/if}
+      </div>
     </div>
 
     <p class="flex items-center gap-2 text-sm text-slate-500">

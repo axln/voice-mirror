@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Sound Mirror — a single-page app that records audio from the microphone and plays it back instantly. Svelte 5 (runes) + TypeScript + Vite + Tailwind CSS v4.
+Voice Mirror — a single-page app that records audio from the microphone and plays it back instantly. Svelte 5 (runes) + TypeScript + Vite + Tailwind CSS v4.
 
 ## Commands
 
