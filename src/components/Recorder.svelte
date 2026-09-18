@@ -320,7 +320,5 @@
     </div>
   </div>
 
-  <p class="mt-4 text-center text-xs text-slate-300">
-    v{__APP_VERSION__}{__APP_BUILD__ ? ` · build ${__APP_BUILD__}` : ''}
-  </p>
+  <p class="mt-4 text-center text-xs text-slate-300">v{__APP_VERSION__}</p>
 </div>
