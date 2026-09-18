@@ -229,10 +229,10 @@
         <Button
           bind:element={pauseButtonElement}
           class={[
-            'h-32 w-32 border border-transparent bg-slate-900 text-white shadow-sm sm:h-28 sm:w-28',
-            'hover:bg-slate-700',
+            'h-32 w-32 border border-slate-200 bg-white text-slate-600 shadow-sm sm:h-28 sm:w-28',
+            'hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700',
             'focus-visible:ring-slate-300',
-            'disabled:bg-slate-100 disabled:text-slate-300 disabled:shadow-none',
+            'disabled:border-slate-100 disabled:bg-white disabled:text-slate-300 disabled:shadow-none',
           ]}
           disabled={audioElement ? null : ''}
           onclick={onpause}
