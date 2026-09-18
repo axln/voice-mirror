@@ -12,6 +12,10 @@ dist
 dist-ssr
 *.local
 
+# Scratch dir for temporary/check files (screenshots, one-off scripts, etc.)
+tmp/*
+!tmp/.gitkeep
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

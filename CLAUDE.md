@@ -12,10 +12,10 @@ Voice Mirror — a single-page app that records audio from the microphone and pl
 yarn dev      # start Vite dev server
 yarn build    # production build (outputs to dist/)
 yarn preview  # preview the production build
-yarn check    # type-check: svelte-check + tsc (no separate lint/test scripts exist)
+yarn run check # type-check: svelte-check + tsc (no separate lint/test scripts exist)
 ```
 
-There is no test suite and no lint script configured. Use `yarn check` to verify changes compile and type-check.
+There is no test suite and no lint script configured. Use `yarn run check` to verify changes compile and type-check. Note: plain `yarn check` runs Yarn Classic's own built-in `check` command (lockfile integrity, unrelated) instead of this script — always use `yarn run check`.
 
 Formatting is via Prettier (`.prettierrc`): single quotes, trailing commas (es5), 100 print width, with `prettier-plugin-svelte` and `prettier-plugin-tailwindcss` (which auto-sorts Tailwind classes). There's no `format` script — run `yarn prettier --write .` (or via `npx`) directly if needed.
 
@@ -35,3 +35,7 @@ Formatting is via Prettier (`.prettierrc`): single quotes, trailing commas (es5)
 - Audio state flows one-directionally: `Recorder` owns the `Blob`/object-URL lifecycle (creating and revoking `URL.createObjectURL` in an `$effect` cleanup) and passes `audioUrl` down to `Surfer`, which owns the wavesurfer instance and hands the `<audio>` element back up via a bindable prop.
 - `stopRecord` can only be called once (`startAudioRecord` throws on a second call) — `Recorder` nulls it out immediately after invoking it.
 - Recording start is async (`getUserMedia` + `MediaRecorder` setup); `Recorder` guards against the stop button being pressed before `stopRecord` is available (`disabled={recording && !stopRecord}`).
+
+## Scratch files
+
+Use `tmp/` at the project root for anything temporary — one-off check scripts, build test output, screenshots taken while verifying a UI change, etc. It's gitignored (except a `.gitkeep` placeholder) so nothing written there ends up in commits.
