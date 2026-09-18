@@ -201,7 +201,7 @@
         <div
           class="flex h-48 w-full items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 px-8 text-center text-sm text-slate-400"
         >
-          Your recording will appear here
+          Press the button to start recording.
         </div>
       {/if}
     </div>
