@@ -84,6 +84,11 @@
   // "System default" item instead of duplicating it.
   let hasBrowserDefaultDevice = $derived(audioInputDevices.some((d) => d.deviceId === 'default'));
 
+  // Before mic permission is granted, browsers still list audioinput devices
+  // but with blank labels (and often blank/indistinguishable deviceIds), so
+  // there's nothing meaningful to pick between yet.
+  let hasMicPermission = $derived(audioInputDevices.some((d) => d.label));
+
   async function onrecord() {
     console.log('onrecord');
     if (recording) {
@@ -272,39 +277,43 @@
             >
               <p class="px-3 pt-2 pb-1 text-xs font-medium text-slate-500">Microphone:</p>
               <ul>
-                {#if !hasBrowserDefaultDevice}
-                  <li>
-                    <button
-                      type="button"
-                      class="flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
-                      onclick={() => selectDevice('')}
-                    >
-                      <span class="flex w-5 shrink-0 items-center justify-center">
-                        {#if selectedDeviceId === ''}
-                          <Check size={20} />
-                        {/if}
-                      </span>
-                      <span class="break-words">System default</span>
-                    </button>
-                  </li>
+                {#if hasMicPermission}
+                  {#if !hasBrowserDefaultDevice}
+                    <li>
+                      <button
+                        type="button"
+                        class="flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
+                        onclick={() => selectDevice('')}
+                      >
+                        <span class="flex w-5 shrink-0 items-center justify-center">
+                          {#if selectedDeviceId === ''}
+                            <Check size={20} />
+                          {/if}
+                        </span>
+                        <span class="break-words">System default</span>
+                      </button>
+                    </li>
+                  {/if}
+                  {#each audioInputDevices as device, i (device.deviceId)}
+                    {@const deviceValue = device.deviceId === 'default' ? '' : device.deviceId}
+                    <li>
+                      <button
+                        type="button"
+                        class="flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
+                        onclick={() => selectDevice(deviceValue)}
+                      >
+                        <span class="flex w-5 shrink-0 items-center justify-center">
+                          {#if selectedDeviceId === deviceValue}
+                            <Check size={20} />
+                          {/if}
+                        </span>
+                        <span class="break-words">{device.label || `Microphone ${i + 1}`}</span>
+                      </button>
+                    </li>
+                  {/each}
+                {:else}
+                  <li class="px-3 py-2 text-sm text-slate-300">Microphone permission required</li>
                 {/if}
-                {#each audioInputDevices as device, i (device.deviceId)}
-                  {@const deviceValue = device.deviceId === 'default' ? '' : device.deviceId}
-                  <li>
-                    <button
-                      type="button"
-                      class="flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50"
-                      onclick={() => selectDevice(deviceValue)}
-                    >
-                      <span class="flex w-5 shrink-0 items-center justify-center">
-                        {#if selectedDeviceId === deviceValue}
-                          <Check size={20} />
-                        {/if}
-                      </span>
-                      <span class="break-words">{device.label || `Microphone ${i + 1}`}</span>
-                    </button>
-                  </li>
-                {/each}
               </ul>
             </div>
           {/if}
