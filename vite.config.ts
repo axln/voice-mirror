@@ -1,7 +1,10 @@
+import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { defineConfig } from 'vite';
 import tailwindcss from '@tailwindcss/vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+
+const pkg = JSON.parse(readFileSync(resolve(__dirname, 'package.json'), 'utf-8'));
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -12,4 +15,10 @@ export default defineConfig({
     },
   },
   base: '/voice-mirror/',
+  define: {
+    // GITHUB_RUN_NUMBER is set automatically on every GitHub Actions run and
+    // increments with each run, giving us a free build number; empty locally.
+    __APP_VERSION__: JSON.stringify(pkg.version),
+    __APP_BUILD__: JSON.stringify(process.env.GITHUB_RUN_NUMBER ?? ''),
+  },
 });
