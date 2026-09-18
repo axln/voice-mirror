@@ -3,7 +3,7 @@
 </script>
 
 <main
-  class="flex min-h-screen w-full items-center justify-center bg-linear-to-b from-slate-50 via-white to-slate-100 px-6 py-16"
+  class="flex min-h-screen w-full items-start justify-center bg-linear-to-b from-slate-50 via-white to-slate-100 px-6 pt-[10vh] pb-16"
 >
   <Recorder />
 </main>
