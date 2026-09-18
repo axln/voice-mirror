@@ -1,10 +1,21 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   --spacing: 2px;
+  --animate-glow-pulse: glow-pulse 2.4s ease-in-out infinite;
 }
 
 html,
 body {
   height: 100%;
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 16px 5px rgb(239 68 68 / 35%);
+  }
+  50% {
+    box-shadow: 0 0 16px 5px rgb(239 68 68 / 75%);
+  }
 }

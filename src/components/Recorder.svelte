@@ -26,16 +26,6 @@
   let pauseButtonElement: HTMLButtonElement;
   let audioElement: HTMLAudioElement | undefined = $state(undefined);
 
-  let statusText = $derived(
-    recording
-      ? 'Recording…'
-      : audioUrl
-        ? playing
-          ? 'Playing…'
-          : 'Tap Play to listen'
-        : 'Tap to record'
-  );
-
   $effect(() => {
     if (audio) {
       const objUrl = (audioUrl = URL.createObjectURL(audio));
@@ -207,31 +197,21 @@
 
     <div class="flex flex-col items-center gap-6">
       <div class="relative flex w-full items-center justify-center gap-10">
-        <div class="relative">
-          {#if recording}
-            <span
-              class="absolute inset-0 -z-10 animate-ping rounded-full bg-red-400/60"
-              aria-hidden="true"
-            ></span>
-          {/if}
-          <!-- disabled={recording && !stopRecord} -->
-          <!-- data-record={recording ? '' : null}  -->
-          <Button
-            bind:element={recordButtonElement}
-            class={[
-              'h-32 w-32 border-2 border-red-300 bg-white text-red-500 shadow-sm',
-              'hover:border-red-400 hover:bg-red-50',
-              'focus-visible:ring-red-200',
-              'data-record:not-disabled:border-red-500 data-record:not-disabled:bg-red-500 data-record:not-disabled:text-white data-record:not-disabled:shadow-red-200 data-record:not-disabled:hover:bg-red-600',
-            ]}
-            disabled={recording && !stopRecord}
-            data-record={recording ? '' : null}
-            onclick={onrecord}
-            aria-label={recording ? 'Stop recording' : 'Start recording'}
-          >
-            <Mic size={26} />
-          </Button>
-        </div>
+        <Button
+          bind:element={recordButtonElement}
+          class={[
+            'h-32 w-32 border-2 border-red-300 bg-white text-red-500 shadow-sm',
+            'hover:border-red-400 hover:bg-red-50',
+            'focus-visible:ring-red-200',
+            'data-record:not-disabled:animate-glow-pulse data-record:not-disabled:border-red-500 data-record:not-disabled:bg-red-500 data-record:not-disabled:text-white data-record:not-disabled:hover:bg-red-600',
+          ]}
+          disabled={recording && !stopRecord}
+          data-record={recording ? '' : null}
+          onclick={onrecord}
+          aria-label={recording ? 'Stop recording' : 'Start recording'}
+        >
+          <Mic size={26} />
+        </Button>
 
         <Button
           bind:element={pauseButtonElement}
@@ -320,11 +300,28 @@
         </div>
       </div>
 
-      <p class="flex items-center gap-2 text-sm text-slate-500">
-        {#if recording}
-          <span class="h-2 w-2 animate-pulse rounded-full bg-red-500" aria-hidden="true"></span>
-        {/if}
-        {statusText}
+      <p class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-slate-400">
+        <span class="inline-flex items-center gap-1.5">
+          <kbd
+            class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-sans text-[11px] text-slate-500"
+            >Space</kbd
+          >
+          record / stop
+        </span>
+        <span class="inline-flex items-center gap-1.5">
+          <kbd
+            class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-sans text-[11px] text-slate-500"
+            >Esc</kbd
+          >
+          pause
+        </span>
+        <span class="inline-flex items-center gap-1.5">
+          <kbd
+            class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-sans text-[11px] text-slate-500"
+            >Enter</kbd
+          >
+          play
+        </span>
       </p>
     </div>
   </div>
