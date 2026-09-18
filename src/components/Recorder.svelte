@@ -290,7 +290,7 @@
                             <Check size={20} />
                           {/if}
                         </span>
-                        <span class="break-words">System default</span>
+                        <span class="wrap-break-word">System default</span>
                       </button>
                     </li>
                   {/if}
@@ -307,7 +307,7 @@
                             <Check size={20} />
                           {/if}
                         </span>
-                        <span class="break-words">{device.label || `Microphone ${i + 1}`}</span>
+                        <span class="wrap-break-word">{device.label || `Microphone ${i + 1}`}</span>
                       </button>
                     </li>
                   {/each}
