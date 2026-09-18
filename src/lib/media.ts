@@ -1,3 +1,5 @@
+import { createPeakSampler } from '~/lib/waveform';
+
 export async function listAudioInputDevices(): Promise<MediaDeviceInfo[]> {
   if (!navigator.mediaDevices?.enumerateDevices) {
     return [];
@@ -6,7 +8,9 @@ export async function listAudioInputDevices(): Promise<MediaDeviceInfo[]> {
   return devices.filter((device) => device.kind === 'audioinput');
 }
 
-export async function startAudioRecord(deviceId?: string) {
+export async function startAudioRecord(
+  deviceId?: string
+): Promise<{ stopRecord: () => Promise<Blob>; getNextPeak: () => number }> {
   if (navigator.mediaDevices) {
     let chunks: Blob[] = [];
     let resolve: ((data: Blob) => void) | null = null;
@@ -32,6 +36,8 @@ export async function startAudioRecord(deviceId?: string) {
     const recorder = new MediaRecorder(stream);
     // console.log('recorder:', recorder);
 
+    const peakSampler = createPeakSampler(stream);
+
     recorder.ondataavailable = function (e) {
       // console.log('data:', e);
       chunks.push(e.data);
@@ -52,6 +58,7 @@ export async function startAudioRecord(deviceId?: string) {
         resolve = null;
       }
       chunks = [];
+      peakSampler.dispose();
       stream.getTracks().forEach(function (track) {
         track.stop();
       });
@@ -73,7 +80,7 @@ export async function startAudioRecord(deviceId?: string) {
       });
     };
 
-    return stopRecord;
+    return { stopRecord, getNextPeak: peakSampler.getNextPeak };
   } else {
     throw new Error('User media not supported.');
   }

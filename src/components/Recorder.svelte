@@ -8,11 +8,12 @@
   import Settings from '~/components/icons/Settings.svelte';
   import Check from '~/components/icons/Check.svelte';
   import Logo from '~/components/icons/Logo.svelte';
-  import Surfer from './Surfer.svelte';
+  import Waveform from './Waveform.svelte';
 
   let recording = $state(false);
   let playing = $state(true);
   let stopRecord: (() => Promise<Blob>) | null = $state(null);
+  let getNextPeak: (() => number) | null = $state(null);
   let audio: Blob | null = $state(null);
   let audioUrl: string | null = $state(null);
   let audioInputDevices: MediaDeviceInfo[] = $state([]);
@@ -85,6 +86,7 @@
       if (stopRecord) {
         const stopPromise = stopRecord();
         stopRecord = null;
+        getNextPeak = null;
         stopPromise
           .then((blob) => {
             audio = blob;
@@ -111,8 +113,9 @@
       recording = true;
       playing = false;
       startAudioRecord(selectedDeviceId || undefined)
-        .then((stop) => {
+        .then(({ stopRecord: stop, getNextPeak: peak }) => {
           stopRecord = stop;
+          getNextPeak = peak;
           // labels are only populated once mic permission has been granted
           refreshAudioInputDevices();
         })
@@ -182,9 +185,17 @@
     </div>
 
     <div class="mb-10">
-      {#if audioUrl}
-        <div class="w-full rounded-2xl border border-slate-200 bg-slate-50 p-8">
-          <Surfer {audioUrl} bind:audioElement />
+      {#if recording}
+        <div
+          class="flex h-48 w-full items-center rounded-2xl border border-slate-200 bg-slate-50 px-8"
+        >
+          <Waveform {getNextPeak} />
+        </div>
+      {:else if audioUrl}
+        <div
+          class="flex h-48 w-full items-center rounded-2xl border border-slate-200 bg-slate-50 px-8"
+        >
+          <Waveform {audioUrl} bind:audioElement />
         </div>
       {:else}
         <div

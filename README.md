@@ -10,7 +10,7 @@ A single-page app that records audio from your microphone and plays it back inst
 
 - One-tap record, with instant playback of the take
 - Looping playback so you can listen to a recording repeatedly
-- Waveform visualization of the recording ([wavesurfer.js](https://wavesurfer.xyz/))
+- Live scrolling waveform while recording, then a clickable static waveform with a playback cursor — a custom `<canvas>`-based component, no external waveform library
 - Keyboard shortcuts: <kbd>Space</kbd> / <kbd>Enter</kbd> to record or play, <kbd>Esc</kbd> to stop
 - Raw microphone capture — echo cancellation, noise suppression, and automatic gain control are all disabled so you hear exactly what the mic picks up
 

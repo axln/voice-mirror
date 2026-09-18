@@ -22,8 +22,7 @@
     "svelte-check": "^4.3.4",
     "tailwindcss": "^4.1.18",
     "typescript": "~5.9.3",
-    "vite": "^7.2.4",
-    "wavesurfer.js": "^7.12.1"
+    "vite": "^7.2.4"
   },
   "dependencies": {
     "clsx": "^2.1.1",
