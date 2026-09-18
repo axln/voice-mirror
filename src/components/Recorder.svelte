@@ -199,7 +199,7 @@
         </div>
       {:else}
         <div
-          class="flex h-48 w-full items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 px-8 text-center text-sm text-slate-400"
+          class="flex h-48 w-full items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 px-8 text-center text-sm text-slate-400"
         >
           Press the button to start recording.
         </div>
