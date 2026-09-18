@@ -183,7 +183,7 @@
   <div
     class="w-full rounded-3xl border border-slate-200/70 bg-white p-10 shadow-xl shadow-slate-200/60 sm:p-16"
   >
-    <div class="mb-10 flex flex-col items-center gap-2 text-center">
+    <div class="mb-14 flex flex-col items-center gap-2 text-center">
       <div class="flex items-center justify-center gap-2">
         <Logo size={32} />
         <h1 class="ml-2 text-xl font-semibold tracking-tight text-indigo-500">Voice Mirror</h1>
