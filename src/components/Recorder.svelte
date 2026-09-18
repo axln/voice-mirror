@@ -174,14 +174,16 @@
 
 <div class="flex w-full max-w-md flex-col items-center">
   <div
-    class="w-full rounded-3xl border border-slate-200/70 bg-white p-10 shadow-xl shadow-slate-200/60 sm:p-16"
+    class="w-full rounded-3xl bg-white p-10 sm:border sm:border-slate-200/70 sm:p-16 sm:shadow-xl sm:shadow-slate-200/60"
   >
     <div class="mb-14 flex flex-col items-center gap-2 text-center">
       <div class="flex items-center justify-center gap-2">
         <Logo size={32} />
-        <h1 class="ml-2 text-xl font-semibold tracking-tight text-indigo-500">Voice Mirror</h1>
+        <h1 class="ml-2 text-2xl font-semibold tracking-tight text-indigo-500 sm:text-xl">
+          Voice Mirror
+        </h1>
       </div>
-      <p class="text-sm text-slate-500">Record your voice, hear it back instantly.</p>
+      <p class="text-base text-slate-500 sm:text-sm">Record your voice, hear it back instantly.</p>
     </div>
 
     <div class="mb-10">
@@ -199,7 +201,7 @@
         </div>
       {:else}
         <div
-          class="flex h-48 w-full items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 px-8 text-center text-sm text-slate-400"
+          class="flex h-48 w-full items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 px-8 text-center text-base text-slate-400 sm:text-sm"
         >
           Press the button to start recording.
         </div>
@@ -211,7 +213,7 @@
         <Button
           bind:element={recordButtonElement}
           class={[
-            'h-32 w-32 border-2 border-red-300 bg-white text-red-500 shadow-sm',
+            'h-36 w-36 border-2 border-red-300 bg-white text-red-500 shadow-sm sm:h-32 sm:w-32',
             'hover:border-red-400 hover:bg-red-50',
             'focus-visible:ring-red-200',
             'data-record:not-disabled:animate-glow-pulse data-record:not-disabled:border-red-500 data-record:not-disabled:bg-red-500 data-record:not-disabled:text-white data-record:not-disabled:hover:bg-red-600',
@@ -227,7 +229,7 @@
         <Button
           bind:element={pauseButtonElement}
           class={[
-            'h-28 w-28 border border-transparent bg-slate-900 text-white shadow-sm',
+            'h-32 w-32 border border-transparent bg-slate-900 text-white shadow-sm sm:h-28 sm:w-28',
             'hover:bg-slate-700',
             'focus-visible:ring-slate-300',
             'disabled:bg-slate-100 disabled:text-slate-300 disabled:shadow-none',
@@ -311,7 +313,9 @@
         </div>
       </div>
 
-      <p class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-slate-400">
+      <p
+        class="hidden flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-slate-400 sm:flex"
+      >
         <span class="inline-flex items-center gap-1.5">
           <kbd
             class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-sans text-[11px] text-slate-500"
