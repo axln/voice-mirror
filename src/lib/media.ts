@@ -1,5 +1,12 @@
 import { createPeakSampler } from '~/lib/waveform';
 
+/**
+ * Lists the available microphone (audioinput) devices. Device labels are
+ * blank until microphone permission has been granted.
+ *
+ * @returns The `audioinput` entries from `navigator.mediaDevices.enumerateDevices()`,
+ * or an empty array if device enumeration isn't supported.
+ */
 export async function listAudioInputDevices(): Promise<MediaDeviceInfo[]> {
   if (!navigator.mediaDevices?.enumerateDevices) {
     return [];
@@ -8,6 +15,17 @@ export async function listAudioInputDevices(): Promise<MediaDeviceInfo[]> {
   return devices.filter((device) => device.kind === 'audioinput');
 }
 
+/**
+ * Starts recording audio from the microphone via `MediaRecorder`/`getUserMedia`
+ * (mono, with AGC/echo-cancellation/noise-suppression explicitly disabled to
+ * capture raw input).
+ *
+ * @param deviceId - Optional `MediaDeviceInfo.deviceId` of the input device to record from;
+ * omit to use the default device.
+ * @returns `stopRecord` — stops the recording and resolves to a `Promise<Blob>` of it; throws
+ * if called more than once. `getNextPeak` — reports the loudest sample since the last call, for
+ * the live waveform.
+ */
 export async function startAudioRecord(
   deviceId?: string
 ): Promise<{ stopRecord: () => Promise<Blob>; getNextPeak: () => number }> {
