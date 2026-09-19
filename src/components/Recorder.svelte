@@ -166,7 +166,11 @@
       if (audioElement) {
         if (document.activeElement !== pauseButtonElement) {
           e.preventDefault();
-          audioElement.play();
+          if (audioElement.paused) {
+            audioElement.play();
+          } else {
+            audioElement.pause();
+          }
         }
       }
     }
@@ -340,7 +344,7 @@
             class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 font-sans text-[11px] text-slate-500"
             >Enter</kbd
           >
-          play
+          play / pause
         </span>
       </p>
     </div>
