@@ -32,7 +32,7 @@ Formatting is via Prettier (`.prettierrc`): single quotes, trailing commas (es5)
 - `src/lib/waveform.ts` — `calculatePeaks()` downsamples decoded PCM into display-ready peaks (dB-scaled, squared so quiet audio reads as quieter); `createPeakSampler()` taps an `AnalyserNode` off the live `MediaStream` (not connected to speakers) for the live waveform, and exposes `dispose()` to tear down the `AudioContext`/analyser when recording stops.
 - `src/lib/circular-buffer.ts` — fixed-length ring buffer (`CircularBuffer`) backing the live waveform's scrolling peak window.
 - `src/components/Button.svelte` — shared button primitive; merges classes with `tailwind-merge`/`clsx`, forwards all extra props, exposes its DOM element via `bind:element`.
-- `src/components/icons/` — small self-contained SVG icon components (`Mic`, `Play`, `Pause`, `Settings`, `Check`, `Logo`), each taking a `size` prop.
+- `src/components/icons/` — small self-contained SVG icon components (`Mic`, `Play`, `Pause`, `Stop`, `Settings`, `Check`, `Logo`), each taking a `size` prop.
 - `src/lib/timer.ts` — trivial `delay(ms)` promise helper.
 - `index.html` — sets the page `<title>`/description and Open Graph/Twitter card meta tags (pointing at `https://axln.github.io/voice-mirror/`).
 

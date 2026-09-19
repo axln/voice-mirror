@@ -5,6 +5,7 @@
   import Mic from '~/components/icons/Mic.svelte';
   import Play from '~/components/icons/Play.svelte';
   import Pause from '~/components/icons/Pause.svelte';
+  import Stop from '~/components/icons/Stop.svelte';
   import Settings from '~/components/icons/Settings.svelte';
   import Check from '~/components/icons/Check.svelte';
   import Logo from '~/components/icons/Logo.svelte';
@@ -223,7 +224,11 @@
           onclick={onrecord}
           aria-label={recording ? 'Stop recording' : 'Start recording'}
         >
-          <Mic size={26} />
+          {#if recording}
+            <Stop size={26} />
+          {:else}
+            <Mic size={26} />
+          {/if}
         </Button>
 
         <Button
