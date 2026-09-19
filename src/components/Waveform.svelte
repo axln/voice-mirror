@@ -14,7 +14,7 @@
 
   let containerWidth = $state(0);
 
-  const canvasHeight = 64;
+  const canvasHeight = 80;
   const barWidth = 2;
   const barGap = 2;
   const barStep = barWidth + barGap;
