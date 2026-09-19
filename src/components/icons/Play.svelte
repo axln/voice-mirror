@@ -11,6 +11,7 @@
   stroke-width="2"
   stroke-linecap="round"
   stroke-linejoin="round"
+  class="translate-x-[2px]"
 >
   <polygon points="5 3 19 12 5 21 5 3"></polygon>
 </svg>
