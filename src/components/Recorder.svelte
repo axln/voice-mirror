@@ -184,9 +184,7 @@
     <div class="mb-14 flex flex-col items-center gap-2 text-center">
       <div class="flex items-center justify-center gap-2">
         <Logo size={32} />
-        <h1 class="ml-2 text-2xl font-semibold tracking-tight text-indigo-500 sm:text-xl">
-          Voice Mirror
-        </h1>
+        <h1 class="ml-2 text-2xl font-semibold tracking-tight text-indigo-500">Voice Mirror</h1>
       </div>
       <p class="text-base text-slate-500 sm:text-sm">Record your voice, hear it back instantly.</p>
     </div>

@@ -19,6 +19,8 @@ There is no test suite and no lint script configured. Use `yarn run check` to ve
 
 There's also `yarn bump-version` (`scripts/bump-version.mjs`), which increments `package.json`'s patch version. It's a CI-only step (see `.github/workflows/deploy.yml`): the deploy workflow bumps the version before building — so the build embeds the new version via `__APP_VERSION__` — then commits it back to `main` with `[skip ci]`. No need to run it locally.
 
+After `git push` to `main`, wait for the "Deploy to GitHub Pages" GitHub Actions workflow to finish, then run `git pull --rebase` — the workflow pushes a version-bump commit back to `main`, and skipping this leaves the local branch behind origin.
+
 Formatting is via Prettier (`.prettierrc`): single quotes, trailing commas (es5), 100 print width, with `prettier-plugin-svelte` and `prettier-plugin-tailwindcss` (which auto-sorts Tailwind classes). There's no `format` script — run `yarn prettier --write .` (or via `npx`) directly if needed.
 
 ## Architecture
