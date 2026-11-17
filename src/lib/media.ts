@@ -24,11 +24,12 @@ export async function listAudioInputDevices(): Promise<MediaDeviceInfo[]> {
  * omit to use the default device.
  * @returns `stopRecord` — stops the recording and resolves to a `Promise<Blob>` of it; throws
  * if called more than once. `getNextPeak` — reports the loudest sample since the last call, for
- * the live waveform.
+ * the live waveform. `deviceId` — the device the browser actually opened, which with no `deviceId`
+ * argument may be one picked in the browser's own site settings rather than the OS default.
  */
 export async function startAudioRecord(
   deviceId?: string
-): Promise<{ stopRecord: () => Promise<Blob>; getNextPeak: () => number }> {
+): Promise<{ stopRecord: () => Promise<Blob>; getNextPeak: () => number; deviceId?: string }> {
   if (navigator.mediaDevices) {
     let chunks: Blob[] = [];
     let resolve: ((data: Blob) => void) | null = null;
@@ -98,7 +99,11 @@ export async function startAudioRecord(
       });
     };
 
-    return { stopRecord, getNextPeak: peakSampler.getNextPeak };
+    return {
+      stopRecord,
+      getNextPeak: peakSampler.getNextPeak,
+      deviceId: stream.getAudioTracks()[0]?.getSettings().deviceId,
+    };
   } else {
     throw new Error('User media not supported.');
   }

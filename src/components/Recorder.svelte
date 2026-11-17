@@ -67,8 +67,16 @@
     };
   });
 
+  // With "System default" selected the browser picks the mic itself (possibly per its own site
+  // settings), so show the device it actually opened on the last recording as checked.
+  let activeDeviceId = $state('');
+  let checkedDeviceId = $derived(
+    selectedDeviceId || (activeDeviceId === 'default' ? '' : activeDeviceId)
+  );
+
   function selectDevice(deviceId: string) {
     selectedDeviceId = deviceId;
+    activeDeviceId = '';
     showMicMenu = false;
   }
 
@@ -116,9 +124,10 @@
       recording = true;
       playing = false;
       startAudioRecord(selectedDeviceId || undefined)
-        .then(({ stopRecord: stop, getNextPeak: peak }) => {
+        .then(({ stopRecord: stop, getNextPeak: peak, deviceId }) => {
           stopRecord = stop;
           getNextPeak = peak;
+          activeDeviceId = deviceId ?? '';
           // labels are only populated once mic permission has been granted
           refreshAudioInputDevices();
         })
@@ -320,7 +329,7 @@
                         onclick={() => selectDevice('')}
                       >
                         <span class="flex w-5 shrink-0 items-center justify-center">
-                          {#if selectedDeviceId === ''}
+                          {#if checkedDeviceId === ''}
                             <Check size={20} />
                           {/if}
                         </span>
@@ -337,7 +346,7 @@
                         onclick={() => selectDevice(deviceValue)}
                       >
                         <span class="flex w-5 shrink-0 items-center justify-center">
-                          {#if selectedDeviceId === deviceValue}
+                          {#if checkedDeviceId === deviceValue}
                             <Check size={20} />
                           {/if}
                         </span>
