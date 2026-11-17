@@ -1,6 +1,8 @@
 <script lang="ts">
   import { startAudioRecord, listAudioInputDevices } from '~/lib/media';
   import { delay } from '~/lib/timer';
+  import { encodeMp3 } from '~/lib/mp3';
+  import Download from '~/components/icons/Download.svelte';
   import Button from '~/components/Button.svelte';
   import Mic from '~/components/icons/Mic.svelte';
   import Play from '~/components/icons/Play.svelte';
@@ -124,6 +126,22 @@
           console.error('Error starting recording:', err);
           recording = false;
         });
+    }
+  }
+
+  async function ondownload() {
+    if (!audio) {
+      return;
+    }
+    try {
+      const url = URL.createObjectURL(await encodeMp3(audio));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'recording.mp3';
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Error encoding mp3:', err);
     }
   }
 
@@ -255,6 +273,22 @@
             <Pause size={20} />
           {/if}
         </Button>
+
+        <div class="absolute top-1/2 left-0 -translate-y-1/2">
+          <Button
+            class={[
+              'h-14 w-14 border border-slate-200 bg-white text-slate-500 shadow-sm',
+              'hover:border-slate-300 hover:bg-slate-50 hover:text-slate-700',
+              'focus-visible:ring-slate-200',
+              'disabled:border-slate-100 disabled:bg-white disabled:text-slate-300 disabled:shadow-none',
+            ]}
+            disabled={!audio}
+            onclick={ondownload}
+            aria-label="Download recording as MP3"
+          >
+            <Download size={18} />
+          </Button>
+        </div>
 
         <div class="absolute top-1/2 right-0 -translate-y-1/2" bind:this={micMenuWrapperElement}>
           <Button
